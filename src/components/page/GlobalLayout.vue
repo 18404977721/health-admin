@@ -24,6 +24,7 @@
         v-else
         mode="inline"
         :menus="menus"
+        @menuSelect="myMenuSelect"
         :theme="navTheme"
         :collapsed="collapsed"
         :collapsible="true"></side-menu>
@@ -73,7 +74,9 @@
       </a-layout-footer>
     </a-layout>
 
+    <!-- update-start---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ---- -->
     <!--<setting-drawer></setting-drawer>-->
+    <!-- update-end---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ---- -->
   </a-layout>
 </template>
 
@@ -81,7 +84,11 @@
   import SideMenu from '@/components/menu/SideMenu'
   import GlobalHeader from '@/components/page/GlobalHeader'
   import GlobalFooter from '@/components/page/GlobalFooter'
-  import SettingDrawer from '@/components/setting/SettingDrawer'
+  // update-start---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ------
+  // import SettingDrawer from '@/components/setting/SettingDrawer'
+  // 注释这个因为在个人设置模块已经加载了SettingDrawer页面
+  // update-end ---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ------
+
   import { triggerWindowResizeEvent } from '@/utils/util'
   import { mapState, mapActions } from 'vuex'
   import { mixin, mixinDevice } from '@/utils/mixin.js'
@@ -92,12 +99,17 @@
       SideMenu,
       GlobalHeader,
       GlobalFooter,
-      SettingDrawer
+      // update-start---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ------
+      // // SettingDrawer
+      // 注释这个因为在个人设置模块已经加载了SettingDrawer页面
+      // update-end ---- author:os_chengtgen -- date:20190830 --  for:issues/463 -编译主题颜色已生效，但还一直转圈，显示主题 正在编译 ------
+
     },
     mixins: [mixin, mixinDevice],
     data() {
       return {
         collapsed: false,
+        activeMenu:{},
         menus: []
       }
     },
@@ -119,10 +131,10 @@
       //this.menus = this.mainRouters.find((item) => item.path === '/').children;
       this.menus = this.permissionMenuList
       // 根据后台配置菜单，重新排序加载路由信息
-      // console.log('----加载菜单逻辑----')
-      // console.log(this.mainRouters)
-      // console.log(this.permissionMenuList)
-      // console.log('----navTheme------'+this.navTheme)
+      console.log('----加载菜单逻辑----')
+      console.log(this.mainRouters)
+      console.log(this.permissionMenuList)
+      console.log('----navTheme------'+this.navTheme)
       //--update-end----author:scott---date:20190320------for:根据后台菜单配置，判断是否路由菜单字段，动态选择是否生成路由（为了支持参数URL菜单）------
     },
     methods: {
@@ -136,12 +148,33 @@
         if (!this.isDesktop()) {
           this.collapsed = false
         }
+      },
+      //update-begin-author:taoyan date:20190430 for:动态路由title显示配置的菜单title而不是其对应路由的title
+      myMenuSelect(value){
+        //此处触发动态路由被点击事件
+        this.findMenuBykey(this.menus,value.key)
+        this.$emit("dynamicRouterShow",value.key,this.activeMenu.meta.title)
+        // update-begin-author:sunjianlei date:20191223 for: 修复刷新后菜单Tab名字显示异常
+        let storeKey = 'route:title:' + this.activeMenu.path
+        this.$ls.set(storeKey, this.activeMenu.meta.title)
+        // update-end-author:sunjianlei date:20191223 for: 修复刷新后菜单Tab名字显示异常
+      },
+      findMenuBykey(menus,key){
+        for(let i of menus){
+          if(i.path==key){
+            this.activeMenu = {...i}
+          }else if(i.children && i.children.length>0){
+            this.findMenuBykey(i.children,key)
+          }
+        }
       }
+      //update-end-author:taoyan date:20190430 for:动态路由title显示配置的菜单title而不是其对应路由的title
     }
   }
+
 </script>
 
-<style lang="scss">
+<style lang="less">
   body {
     // 打开滚动条固定显示
     overflow-y: scroll;
@@ -308,6 +341,10 @@
             font-size: 16px;
             padding: 4px;
           }
+
+          .anticon {
+            color: white;
+          }
         }
       }
 
@@ -319,6 +356,10 @@
 
             &:hover {
               background: rgba(0, 0, 0, 0.05);
+            }
+
+            .anticon {
+              color: black;
             }
           }
         }
@@ -406,10 +447,9 @@
 
           .logo.top-nav-header {
             width: 165px;
-            height: 60px;
-            font-weight: bold !important;
+            height: 64px;
             position: relative;
-            line-height: 60px;
+            line-height: 64px;
             transition: all .3s;
             overflow: hidden;
 
@@ -422,6 +462,7 @@
             h1 {
               color: #fff;
               display: inline-block;
+              vertical-align: top;
               font-size: 16px;
               margin: 0 0 0 12px;
               font-weight: 400;
@@ -474,6 +515,7 @@
 
     // 内容区
     .layout-content {
+      margin: 24px 24px 0px;
       height: 64px;
       padding: 0 12px 0 0;
     }

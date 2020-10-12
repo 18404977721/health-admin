@@ -1,16 +1,17 @@
 <template>
   <div class="footer">
-    <!--<div class="links">-->
-      <!--<a href="http://www.jeecg.org" target="_blank">JEECG 首页</a>-->
-      <!--<a href="https://github.com/zhangdaiscott/jeecg-boot" target="_blank">-->
-        <!--<a-icon type="github"/>-->
-      <!--</a>-->
-      <!--<a href="https://ant.design/">Ant Design</a>-->
-      <!--<a href="https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/">Vue Antd</a>-->
-    <!--</div>-->
+    <div class="links">
+      <a href="http://www.jeecg.com" target="_blank">JEECG 首页</a>
+      <a href="https://github.com/zhangdaiscott/jeecg-boot" target="_blank">
+        <a-icon type="github"/>
+      </a>
+      <a href="https://ant.design/">Ant Design</a>
+      <a href="https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/">Vue Antd</a>
+    </div>
     <div class="copyright">
-      <span style="margin-right: 30px">主办单位：中共山西省委员会</span>
-      <span >技术支持：山西云时代技术有限公司</span>
+      Copyright
+      <a-icon type="copyright"/>
+      2019 <span>JEECG开源社区 出品</span>
     </div>
   </div>
 </template>
@@ -21,10 +22,10 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .footer {
     padding: 0 16px;
-    margin: 24px 0;
+    margin: 48px 0 24px;
     text-align: center;
 
     .links {
