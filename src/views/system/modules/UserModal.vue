@@ -40,14 +40,6 @@
           <a-input placeholder="请输入用户姓名" v-decorator="[ 'realname', validatorRules.realname]" />
         </a-form-item>
 
-        <a-form-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入工号" v-decorator="[ 'workNo', validatorRules.workNo]" />
-        </a-form-item>
-
-        <a-form-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-select-position placeholder="请选择职务" :multiple="false" v-decorator="['post', {}]"/>
-        </a-form-item>
-
         <a-form-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
           <a-select
             mode="multiple"
@@ -80,7 +72,7 @@
             <a-radio value="2">上级</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
+        <!-- <a-form-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
           <a-select
             mode="multiple"
             style="width: 100%"
@@ -94,41 +86,30 @@
             >{{item.title}}</a-select-option
             >
           </a-select>
-        </a-form-item>
+        </a-form-item> -->
         <!-- update--end--autor:wangshuai-----date:20200108------for：新增身份和负责部门------ -->
-        <a-form-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!-- <a-form-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-image-upload class="avatar-uploader" text="上传" v-model="fileList" ></j-image-upload>
-        </a-form-item>
+        </a-form-item> -->
 
-        <a-form-item label="生日" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-date-picker
-            style="width: 100%"
-            placeholder="请选择生日"
-            v-decorator="['birthday', {initialValue:!model.birthday?null:moment(model.birthday,dateFormat)}]"/>
-        </a-form-item>
-
-        <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!-- <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-select v-decorator="[ 'sex', {}]" placeholder="请选择性别">
             <a-select-option :value="1">男</a-select-option>
             <a-select-option :value="2">女</a-select-option>
           </a-select>
-        </a-form-item>
+        </a-form-item> -->
 
-        <a-form-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!-- <a-form-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入邮箱" v-decorator="[ 'email', validatorRules.email]" />
-        </a-form-item>
+        </a-form-item> -->
 
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')" v-decorator="[ 'phone', validatorRules.phone]" />
         </a-form-item>
 
-        <a-form-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入座机" v-decorator="[ 'telephone', validatorRules.telephone]"/>
-        </a-form-item>
-
-        <a-form-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!-- <a-form-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-dict-select-tag  v-decorator="['activitiSync', {}]" placeholder="请选择是否同步工作流引擎" :type="'radio'" :triggerChange="true" dictCode="activiti_sync"/>
-        </a-form-item>
+        </a-form-item> -->
 
       </a-form>
     </a-spin>
@@ -206,25 +187,13 @@
             }],
           },
           realname:{rules: [{ required: true, message: '请输入用户名称!' }]},
-          phone:{rules: [{validator: this.validatePhone}]},
+          phone:{rules: [{required: true,validator: this.validatePhone}]},
           email:{
             rules: [{
               validator: this.validateEmail
             }],
           },
           roles:{},
-          //  sex:{initialValue:((!this.model.sex)?"": (this.model.sex+""))}
-          workNo: {
-            rules: [
-              { required: true, message: '请输入工号' },
-              { validator: this.validateWorkNo }
-            ]
-          },
-          telephone: {
-            rules: [
-              { pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },
-            ]
-          }
         },
         departIdShow:false,
         departIds:[], //负责部门id
@@ -329,7 +298,7 @@
         that.visible = true;
         that.model = Object.assign({}, record);
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync','workNo','telephone','post'))
+          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync'))
         });
         //身份为上级显示负责部门，否则不显示
         if(this.model.identity=="2"){
@@ -400,11 +369,6 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             that.confirmLoading = true;
-            if(!values.birthday){
-              values.birthday = '';
-            }else{
-              values.birthday = values.birthday.format(this.dateFormat);
-            }
             let formData = Object.assign(this.model, values);
             formData.avatar = that.fileList;
             formData.selectedroles = this.selectedRole.length>0?this.selectedRole.join(","):'';
@@ -528,21 +492,6 @@
           callback("用户名已存在!")
         }
       })
-      },
-      validateWorkNo(rule, value, callback){
-        var params = {
-          tableName: 'sys_user',
-          fieldName: 'work_no',
-          fieldVal: value,
-          dataId: this.userId
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            callback()
-          } else {
-            callback("工号已存在!")
-          }
-        })
       },
       handleConfirmBlur  (e) {
         const value = e.target.value;

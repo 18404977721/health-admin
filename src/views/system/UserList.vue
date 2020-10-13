@@ -12,17 +12,16 @@
               <j-input placeholder="输入账号模糊查询" v-model="queryParam.username"></j-input>
             </a-form-item>
           </a-col>
-
+          
           <a-col :md="6" :sm="8">
-            <a-form-item label="性别">
-              <a-select v-model="queryParam.sex" placeholder="请选择性别">
+            <a-form-item label="审核状态">
+              <a-select v-model="queryParam.status" placeholder="请选择">
                 <a-select-option value="">请选择</a-select-option>
-                <a-select-option value="1">男性</a-select-option>
-                <a-select-option value="2">女性</a-select-option>
+                <a-select-option value="1">审核通过</a-select-option>
+                <a-select-option value="2">待审核</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-
 
           <template v-if="toggleSearchStatus">
             <a-col :md="6" :sm="8">
@@ -37,15 +36,7 @@
               </a-form-item>
             </a-col>
 
-            <a-col :md="6" :sm="8">
-              <a-form-item label="用户状态">
-                <a-select v-model="queryParam.status" placeholder="请选择">
-                  <a-select-option value="">请选择</a-select-option>
-                  <a-select-option value="1">正常</a-select-option>
-                  <a-select-option value="2">冻结</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
+            
           </template>
 
           <a-col :md="6" :sm="8">
@@ -65,26 +56,26 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator" style="border-top: 5px">
-      <a-button @click="handleAdd" type="primary" icon="plus">添加用户</a-button>
-      <a-button @click="handleSyncUser"  v-has="'user:syncbpm'" type="primary" icon="plus">同步流程</a-button>
+      <!-- <a-button @click="handleAdd" type="primary" icon="plus">添加用户</a-button> -->
+      <!-- <a-button @click="handleSyncUser"  v-has="'user:syncbpm'" type="primary" icon="plus">同步流程</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
-      <a-button type="primary" icon="hdd" @click="recycleBinVisible=true">回收站</a-button>
+      <a-button type="primary" icon="hdd" @click="recycleBinVisible=true">回收站</a-button> -->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay" @click="handleMenuClick">
           <a-menu-item key="1">
             <a-icon type="delete" @click="batchDel"/>
             删除
           </a-menu-item>
-          <a-menu-item key="2">
+          <!-- <a-menu-item key="2">
             <a-icon type="lock" @click="batchFrozen('2')"/>
-            冻结
-          </a-menu-item>
+            未审核
+          </a-menu-item> -->
           <a-menu-item key="3">
             <a-icon type="unlock" @click="batchFrozen('1')"/>
-            解冻
+            审核通过
           </a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px">
@@ -112,11 +103,13 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
-
-        <template slot="avatarslot" slot-scope="text, record, index">
-          <div class="anty-img-wrap">
-            <a-avatar shape="square" :src="getAvatarView(record.avatar)" icon="user"/>
-          </div>
+        
+        <template slot="userType" slot-scope="text, record, index">
+          {{record.userType==0?'个人':record.userType==1?'企业':''}}
+        </template>
+        
+        <template slot="status" slot-scope="text, record, index">
+          {{record.status==1?'审核通过':record.status==2?'待审核':''}}
         </template>
 
         <span slot="action" slot-scope="text, record">
@@ -143,21 +136,15 @@
                 </a-popconfirm>
               </a-menu-item>
 
-              <a-menu-item v-if="record.status==1">
-                <a-popconfirm title="确定冻结吗?" @confirm="() => handleFrozen(record.id,2,record.username)">
-                  <a>冻结</a>
-                </a-popconfirm>
-              </a-menu-item>
-
               <a-menu-item v-if="record.status==2">
-                <a-popconfirm title="确定解冻吗?" @confirm="() => handleFrozen(record.id,1,record.username)">
-                  <a>解冻</a>
+                <a-popconfirm title="确定审核通过吗?" @confirm="() => handleFrozen(record.id,1,record.username)">
+                  <a>审核</a>
                 </a-popconfirm>
               </a-menu-item>
 
-              <a-menu-item>
+              <!-- <a-menu-item>
                 <a href="javascript:;" @click="handleAgentSettings(record.username)">代理人</a>
-              </a-menu-item>
+              </a-menu-item> -->
 
             </a-menu>
           </a-dropdown>
@@ -227,27 +214,13 @@
             align: "center",
             width: 100,
             dataIndex: 'realname',
-          },
+          },   
           {
-            title: '头像',
-            align: "center",
-            width: 120,
-            dataIndex: 'avatar',
-            scopedSlots: {customRender: "avatarslot"}
-          },
-
-          {
-            title: '性别',
-            align: "center",
-            width: 80,
-            dataIndex: 'sex_dictText',
-            sorter: true
-          },
-          {
-            title: '生日',
+            title: '类型',
             align: "center",
             width: 100,
-            dataIndex: 'birthday'
+            scopedSlots: {customRender: 'userType'},
+            dataIndex: 'userType'
           },
           {
             title: '手机号码',
@@ -256,16 +229,11 @@
             dataIndex: 'phone'
           },
           {
-            title: '部门',
-            align: "center",
-            width: 180,
-            dataIndex: 'orgCode'
-          },
-          {
-            title: '状态',
+            title: '审核状态',
             align: "center",
             width: 80,
-            dataIndex: 'status_dictText'
+            scopedSlots: {customRender: 'status'},
+            dataIndex: 'status'
           },
           {
             title: '操作',
@@ -319,7 +287,7 @@
           });
           that.$confirm({
             title: "确认操作",
-            content: "是否" + (status == 1 ? "解冻" : "冻结") + "选中账号?",
+            content: "是否" + (status == 1 ? "审核通过" : "未审核") + "选中账号?",
             onOk: function () {
               frozenBatch({ids: ids, status: status}).then((res) => {
                 if (res.success) {
