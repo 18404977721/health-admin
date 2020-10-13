@@ -4,12 +4,12 @@
       <div class="top">
         <div class="header">
           <a href="/">
-            <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">Jeecg Boot</span>
+            <!-- <img src="~@/assets/logo.svg" class="logo" alt="logo"> -->
+            <span class="title">大健康产业联盟后台管理系统</span>
           </a>
         </div>
         <div class="desc">
-          Jeecg Boot 是中国最具影响力的 企业级 快速开发平台
+          
         </div>
       </div>
 
