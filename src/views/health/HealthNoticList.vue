@@ -12,24 +12,14 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="来源">
-              <a-input placeholder="请输入来源" v-model="queryParam.source"></a-input>
+            <a-form-item label="发布时间">
+              <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-model="queryParam.publishTime" />
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="发布时间">
-                <a-input placeholder="请输入发布时间" v-model="queryParam.publishTime"></a-input>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'" />
               </a>
             </span>
           </a-col>
@@ -158,7 +148,11 @@
       }
     },
     methods: {
-
+      
+      onchange(date, dateString) {
+      	console.log("date, dateString",date, dateString)
+      	this.queryParam.publishTime = dateString
+      },
     }
   }
 </script>

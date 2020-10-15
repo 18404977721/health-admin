@@ -28,7 +28,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="发布时间">
-          <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'publishTime', { rules: [{ required: true, message: '请选择发布时间' }] }]" />
+          <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'publishTime', { rules: [{ required: true, message: '请选择发布时间' }] }]" />
         </a-form-item>
         <!-- <a-form-item
           :labelCol="labelCol"

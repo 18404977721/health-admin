@@ -69,6 +69,12 @@ export const JeecgListMixin = {
         this.ipagination.current = 1;
       }
       var params = this.getQueryParams();//查询条件
+      
+      //add
+      if(params.publishTime){//时间转换格式
+        params.publishTime = params.publishTime?params.publishTime.format('YYYY-MM-DD HH:mm:ss'):null; 
+      }
+      
       this.loading = true;
       getAction(this.url.list, params).then((res) => {
         if (res.success) {
