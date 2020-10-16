@@ -51,6 +51,10 @@
       <a-table ref="table" size="middle" bordered rowKey="id" :columns="columns" :dataSource="dataSource" :pagination="ipagination"
         :loading="loading" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" @change="handleTableChange">
 
+        <span slot="picList" slot-scope="text, record">
+          <img :src="record.picList[0].filePath" alt="">
+        </span>
+        
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
@@ -119,9 +123,12 @@
             dataIndex: 'typeValue'
           },
           {
-            title: '图片地址',
+            title: '图片',
             align: "center",
-            dataIndex: 'filePath'
+            dataIndex: 'picList',
+            scopedSlots: {
+              customRender: 'picList'
+            },
           },
           {
             title: '链接',

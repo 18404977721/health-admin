@@ -1,12 +1,13 @@
 <template>
-  <a-drawer
-      :title="title"
-      :width="800"
-      placement="right"
-      :closable="false"
-      @close="close"
-      :visible="visible"
-  >
+  <a-modal
+    :title="title"
+    :width="800"
+    :visible="visible"
+    :confirmLoading="confirmLoading"
+    @ok="handleOk"
+    @cancel="handleCancel"
+    okText="保存"
+    cancelText="关闭">
 
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
@@ -15,32 +16,18 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="问题">
-          <a-input placeholder="请输入问题" v-decorator="['question', validatorRules.question ]" />
+          <a-input placeholder="请输入问题" disabled v-decorator="['question', {} ]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="时间">
-          <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'time', {}]" />
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="用户ID">
-          <a-input placeholder="请输入用户ID" v-decorator="['userId', {}]" />
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="信息圈ID">
-          <a-input placeholder="请输入信息圈ID" v-decorator="['infoId', {}]" />
+          label="回答">
+          <a-input placeholder="请输入回答" v-decorator="['reply', { rules: [{ required: true, message: '请输入回答' }] }]" />
         </a-form-item>
 		
       </a-form>
     </a-spin>
-    <a-button type="primary" @click="handleOk">确定</a-button>
-    <a-button type="primary" @click="handleCancel">取消</a-button>
-  </a-drawer>
+  </a-modal>
 </template>
 
 <script>
@@ -49,7 +36,7 @@
   import moment from "moment"
 
   export default {
-    name: "HealthQuestionModal",
+    name: "HealthQuestionAnswerModal",
     data () {
       return {
         title:"操作",
@@ -78,17 +65,12 @@
     created () {
     },
     methods: {
-      add () {
-        this.edit({});
-      },
       edit (record) {
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'question','userId','infoId'))
-		  //时间格式化
-          this.form.setFieldsValue({time:this.model.time?moment(this.model.time):null})
+          this.form.setFieldsValue(pick(this.model,'question','reply'))
         });
 
       },
@@ -112,8 +94,6 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            //时间格式化
-            formData.time = formData.time?formData.time.format('YYYY-MM-DD HH:mm:ss'):null;
             
             console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{

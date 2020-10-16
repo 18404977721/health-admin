@@ -43,29 +43,23 @@
           label="上传图片">
         	<a-upload v-decorator="[
         			'picList',
-              :multiple="true"
         			{
         				rules: [{ required: true, message: '请上传图片' }],
         				valuePropName: 'fileList',
         				getValueFromEvent: normFile,
         			},
         		]"
-        	  action="/jeecg-boot/sys/file/upload" list-type="picture">
+        	  action="/jeecg-boot/sys/file/upload" list-type="picture"
+            :multiple="true">
         		<a-button>
         			<a-icon type="upload" /> 选择文件</a-button>
         	</a-upload>
         </a-form-item>
-        <!-- <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="图片地址">
-          <a-input placeholder="请输入图片地址" v-decorator="['filePath', {}]" />
-        </a-form-item> -->
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="链接地址">
-          <a-input placeholder="请输入链接地址" v-decorator="['url', {}]" />
+          <a-input placeholder="请输入链接地址" v-decorator="['url', { rules: [{ required: true, message: '请输入链接地址' }] }]" />
         </a-form-item>
 		
       </a-form>
@@ -74,7 +68,7 @@
 </template>
 
 <script>
-  import { httpAction } from '@/api/manage'
+  import { httpAction,getAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import moment from "moment"
 
@@ -203,17 +197,12 @@
               that.confirmLoading = false;
               that.close();
             })
-
-
-
           }
         })
       },
       handleCancel () {
         this.close()
       },
-
-
     }
   }
 </script>

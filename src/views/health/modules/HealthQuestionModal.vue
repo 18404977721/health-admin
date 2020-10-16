@@ -18,25 +18,7 @@
           label="问题">
           <a-input placeholder="请输入问题" v-decorator="['question', validatorRules.question ]" />
         </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="时间">
-          <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'time', {}]" />
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="用户ID">
-          <a-input placeholder="请输入用户ID" v-decorator="['userId', {}]" />
-        </a-form-item>
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="信息圈ID">
-          <a-input placeholder="请输入信息圈ID" v-decorator="['infoId', {}]" />
-        </a-form-item>
-		
+       
       </a-form>
     </a-spin>
   </a-modal>
@@ -85,7 +67,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'question','userId','infoId'))
+          this.form.setFieldsValue(pick(this.model,'question'))
 		  //时间格式化
           this.form.setFieldsValue({time:this.model.time?moment(this.model.time):null})
         });
@@ -111,8 +93,6 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            //时间格式化
-            formData.time = formData.time?formData.time.format('YYYY-MM-DD HH:mm:ss'):null;
             
             console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{

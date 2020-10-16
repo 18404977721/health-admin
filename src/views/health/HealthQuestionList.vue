@@ -12,30 +12,9 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="时间">
-              <a-input placeholder="请输入时间" v-model="queryParam.time"></a-input>
-            </a-form-item>
-          </a-col>
-        <template v-if="toggleSearchStatus">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="用户ID">
-              <a-input placeholder="请输入用户ID" v-model="queryParam.userId"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="信息圈ID">
-              <a-input placeholder="请输入信息圈ID" v-model="queryParam.infoId"></a-input>
-            </a-form-item>
-          </a-col>
-          </template>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
 
@@ -47,14 +26,18 @@
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('问题')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"
+        @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete" />删除</a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+        <a-button style="margin-left: 8px"> 批量操作
+          <a-icon type="down" />
+        </a-button>
       </a-dropdown>
     </div>
 
@@ -65,24 +48,19 @@
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
-      <a-table
-        ref="table"
-        size="middle"
-        bordered
-        rowKey="id"
-        :columns="columns"
-        :dataSource="dataSource"
-        :pagination="ipagination"
-        :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        @change="handleTableChange">
+      <a-table ref="table" size="middle" bordered rowKey="id" :columns="columns" :dataSource="dataSource" :pagination="ipagination"
+        :loading="loading" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
+          <a @click="clickAnswer(record)">回答</a>
+          
+          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a class="ant-dropdown-link">更多
+              <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -99,77 +77,80 @@
 
     <!-- 表单区域 -->
     <healthQuestion-modal ref="modalForm" @ok="modalFormOk"></healthQuestion-modal>
+    <health-question-answer-modal ref="HealthQuestionAnswerModal" @ok="modalFormOk"></health-question-answer-modal>
   </a-card>
 </template>
 
 <script>
   import HealthQuestionModal from './modules/HealthQuestionModal'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import HealthQuestionAnswerModal from './modules/HealthQuestionAnswerModal'
+  import {
+    JeecgListMixin
+  } from '@/mixins/JeecgListMixin'
 
   export default {
     name: "HealthQuestionList",
-    mixins:[JeecgListMixin],
+    mixins: [JeecgListMixin],
     components: {
-      HealthQuestionModal
+      HealthQuestionModal,
+      HealthQuestionAnswerModal
     },
-    data () {
+    data() {
       return {
         description: '问题管理页面',
         // 表头
-        columns: [
-          {
+        columns: [{
             title: '#',
             dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
+            key: 'rowIndex',
+            width: 60,
+            align: "center",
+            customRender: function(t, r, index) {
+              return parseInt(index) + 1;
             }
-           },
-		   {
+          },
+          {
             title: '问题',
-            align:"center",
+            align: "center",
             dataIndex: 'question'
-           },
-		   {
+          },
+          {
             title: '时间',
-            align:"center",
-            dataIndex: 'time'
-           },
-		   {
-            title: '用户ID',
-            align:"center",
-            dataIndex: 'userId'
-           },
-		   {
-            title: '信息圈ID',
-            align:"center",
-            dataIndex: 'infoId'
-           },
+            align: "center",
+            dataIndex: 'createTime'
+          },
+          {
+            title: '创建人',
+            align: "center",
+            dataIndex: 'createBy'
+          },
           {
             title: '操作',
             dataIndex: 'action',
-            align:"center",
-            scopedSlots: { customRender: 'action' },
+            align: "center",
+            scopedSlots: {
+              customRender: 'action'
+            },
           }
         ],
-		url: {
+        url: {
           list: "/health/healthQuestion/list",
           delete: "/health/healthQuestion/delete",
           deleteBatch: "/health/healthQuestion/deleteBatch",
           exportXlsUrl: "health/healthQuestion/exportXls",
           importExcelUrl: "health/healthQuestion/importExcel",
-       },
-    }
-  },
-  computed: {
-    importExcelUrl: function(){
-      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-    }
-  },
+        },
+      }
+    },
+    computed: {
+      importExcelUrl: function() {
+        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      }
+    },
     methods: {
-     
+      clickAnswer(record){
+        this.$refs.HealthQuestionAnswerModal.edit(record)
+      },
     }
   }
 </script>
