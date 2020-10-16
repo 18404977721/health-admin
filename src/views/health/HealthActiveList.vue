@@ -121,7 +121,7 @@
           {
             title: '活动类型',
             align: "center",
-            dataIndex: 'activeType'
+            dataIndex: 'activeTypeValue'
           },
           {
             title: '状态',

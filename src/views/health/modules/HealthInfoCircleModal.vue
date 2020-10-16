@@ -48,7 +48,7 @@
           :wrapperCol="wrapperCol"
           label="是否为推荐话题">
           <a-select v-decorator="[
-          		'isrecommend',
+          		'isRecommend',
           		{ rules: [{ required: true, message: '请选择是否为推荐话题' }] },
           	]">
           	<a-select-option value="1">是</a-select-option>
@@ -61,14 +61,30 @@
           label="内容">
           <j-editor v-decorator="[ 'content', { rules: [{ required: true, message: '请输入内容' }] } ]" triggerChange></j-editor>
         </a-form-item>
-		
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="上传图片">
+        	<a-upload v-decorator="[
+        			'picList',
+        			{
+        				rules: [{ required: true, message: '请上传图片' }],
+        				valuePropName: 'fileList',
+        				getValueFromEvent: normFile,
+        			},
+        		]"
+        	  action="/jeecg-boot/sys/file/upload" list-type="picture">
+        		<a-button>
+        			<a-icon type="upload" /> 选择文件</a-button>
+        	</a-upload>
+        </a-form-item>
       </a-form>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
-  import { httpAction } from '@/api/manage'
+  import { httpAction,getAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import moment from "moment"
   import JEditor from '@/components/jeecg/JEditor'
@@ -105,6 +121,12 @@
       this.getList()
     },
     methods: {
+      normFile(e) {
+      	if (Array.isArray(e)) {
+      		return e;
+      	}
+      	return e && e.fileList;
+      },
       getList(){
         let formData = {}
         formData.typeCode = 'xxq'
@@ -124,11 +146,26 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'title','source','type','isrecommend','content'))
+          this.form.setFieldsValue(pick(this.model,'title','source','type','isRecommend','content'))
 		  //时间格式化
           this.form.setFieldsValue({publishTime:this.model.publishTime?moment(this.model.publishTime):null})
+          //图片，视频处理
+          let picList = []
+          if(this.model.picList){
+            let picObj = this.model.picList
+            for(let i = 0;i < picObj.length;i++){
+              // let file = {}
+              picObj[i].uid = picObj[i].fileId
+              picObj[i].thumbUrl = picObj[i].filePath
+              picObj[i].url = picObj[i].filePath
+              picObj[i].type = picObj[i].fileType
+              picObj[i].name = picObj[i].fileName
+              picObj[i].status = "done"
+              picList.push(picObj[i])
+            }
+          }
+          this.form.setFieldsValue({picList:picList})
         });
-
       },
       close () {
         this.$emit('close');
@@ -152,6 +189,21 @@
             let formData = Object.assign(this.model, values);
             //时间格式化
             formData.publishTime = formData.publishTime?formData.publishTime.format('YYYY-MM-DD HH:mm:ss'):null;
+            var attach = values.picList;
+            if (attach) {
+            	for (var i = 0; i < attach.length; i++) {
+            		if (attach[i].status != 'done') {
+            			attach.splice(i, 1)
+            		} else {
+            			attach[i].fileName = attach[i].name;
+            			attach[i].filePath = attach[i].filePath?attach[i].filePath:attach[i].response.message;
+            			attach[i].fileType = attach[i].type;
+            		}
+            	}
+            	formData.picList = attach
+            }else{
+              formData.picList = []
+            }
             
             console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{

@@ -16,25 +16,32 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="标题">
-          <a-input placeholder="请输入标题" v-decorator="['title', {}]" />
+          <a-input placeholder="请输入标题" v-decorator="['title', { rules: [{ required: true, message: '请输入标题' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="类型">
-          <a-input placeholder="请输入类型" v-decorator="['type', {}]" />
+          <a-select v-decorator="[
+          		'type',
+          		{ rules: [{ required: true, message: '请选择类型' }] },
+          	]">
+          	<template v-for="item in list">
+          		<a-select-option :value="item.id">{{item.typeValue}}</a-select-option>
+          	</template>
+          </a-select>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="发布时间">
-          <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'publishTime', {}]" />
+          <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'publishTime', { rules: [{ required: true, message: '请选择发布时间' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="内容">
-          <a-input placeholder="请输入内容" v-decorator="['content', {}]" />
+          <j-editor v-decorator="[ 'content', { rules: [{ required: true, message: '请输入内容' }] } ]" triggerChange></j-editor>
         </a-form-item>
 		
       </a-form>
@@ -43,12 +50,14 @@
 </template>
 
 <script>
-  import { httpAction } from '@/api/manage'
+  import { httpAction,getAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import moment from "moment"
+  import JEditor from '@/components/jeecg/JEditor'
 
   export default {
     name: "HealthPubSourceModal",
+    components: { JEditor},
     data () {
       return {
         title:"操作",
@@ -71,11 +80,24 @@
           add: "/health/healthPubSource/add",
           edit: "/health/healthPubSource/edit",
         },
+        list:[],
       }
     },
     created () {
+      this.getList()
     },
     methods: {
+      getList(){
+        let formData = {}
+        formData.typeCode = 'ggzy'
+        formData.pageNo = 1
+        formData.pageSize = 100
+        getAction('/health/healthTypeValue/list',formData).then((res)=>{
+          if(res.success){
+            this.list = res.result.records
+          }
+        })
+      },
       add () {
         this.edit({});
       },

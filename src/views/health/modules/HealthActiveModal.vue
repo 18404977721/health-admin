@@ -76,7 +76,7 @@
         			{
         				rules: [{ required: false, message: '请上传视频' }],
         				valuePropName: 'fileList',
-        				getValueFromEvent: normFile,
+        				getValueFromEvent: normFile1,
         			},
         		]"
         	  action="/jeecg-boot/sys/file/upload">
@@ -135,7 +135,12 @@
     },
     methods: {
       normFile(e) {
-      	console.log('Upload event:', e);
+      	if (Array.isArray(e)) {
+      		return e;
+      	}
+      	return e && e.fileList;
+      },
+      normFile1(e) {
       	if (Array.isArray(e)) {
       		return e;
       	}
@@ -160,10 +165,42 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'title','activeType','activeAddr','activeContent','picList','videoList'))
-		  //时间格式化
+          this.form.setFieldsValue(pick(this.model,'title','activeType','activeAddr','activeContent'))
+          //时间格式化
           this.form.setFieldsValue({startTime:this.model.startTime?moment(this.model.startTime):null})
           this.form.setFieldsValue({endTime:this.model.endTime?moment(this.model.endTime):null})
+          //图片，视频处理
+          let picList = []
+          if(this.model.picList){
+            let picObj = this.model.picList
+            for(let i = 0;i < picObj.length;i++){
+              // let file = {}
+              picObj[i].uid = picObj[i].fileId
+              picObj[i].thumbUrl = picObj[i].filePath
+              picObj[i].url = picObj[i].filePath
+              picObj[i].type = picObj[i].fileType
+              picObj[i].name = picObj[i].fileName
+              picObj[i].status = "done"
+              picList.push(picObj[i])
+            }
+          }
+          this.form.setFieldsValue({picList:picList})
+          let videoList = []
+          if(this.model.videoList){
+            let videoObj = this.model.videoList
+            console.log(videoObj)
+            for(let i = 0;i < videoObj.length;i++){
+              // let file = {}
+              videoObj[i].uid = videoObj[i].fileId
+              videoObj[i].thumbUrl = videoObj[i].filePath
+              videoObj[i].url = videoObj[i].filePath
+              videoObj[i].type = videoObj[i].fileType
+              videoObj[i].name = videoObj[i].fileName
+              videoObj[i].status = "done"
+              videoList.push(videoObj[i])
+            }
+          }
+          this.form.setFieldsValue({videoList:videoList})
         });
 
       },
@@ -198,11 +235,13 @@
             			attach.splice(i, 1)
             		} else {
             			attach[i].fileName = attach[i].name;
-            			attach[i].filePath = attach[i].response.message;
+            			attach[i].filePath = attach[i].filePath?attach[i].filePath:attach[i].response.message;
             			attach[i].fileType = attach[i].type;
             		}
             	}
             	formData.picList = attach
+            }else{
+              formData.picList = []
             }
             var attach1 = values.videoList;
             if (attach1) {
@@ -211,13 +250,14 @@
             			attach1.splice(i, 1)
             		} else {
             			attach1[i].fileName = attach1[i].name;
-            			attach1[i].filePath = attach1[i].response.message;
+            			attach1[i].filePath = attach1[i].filePath?attach1[i].filePath:attach1[i].response.message;
             			attach1[i].fileType = attach1[i].type;
             		}
             	}
             	formData.videoList = attach1
+            }else{
+              formData.videoList = []
             }
-            
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

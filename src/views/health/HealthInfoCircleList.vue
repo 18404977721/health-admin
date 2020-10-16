@@ -55,7 +55,12 @@
 
       <a-table ref="table" size="middle" bordered rowKey="id" :columns="columns" :dataSource="dataSource" :pagination="ipagination"
         :loading="loading" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" @change="handleTableChange">
-
+        
+        
+        <span slot="isRecommend" slot-scope="text, record">
+          {{record.isRecommend=='1'?'是':'否'}}
+        </span>
+          
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
@@ -126,12 +131,15 @@
           {
             title: '类型',
             align: "center",
-            dataIndex: 'type'
+            dataIndex: 'typeValue'
           },
           {
             title: '是否为推荐话题',
             align: "center",
-            dataIndex: 'isrecommend'
+            dataIndex: 'isRecommend',
+            scopedSlots: {
+              customRender: 'isRecommend'
+            },
           },
           {
             title: '操作',

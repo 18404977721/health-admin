@@ -11,12 +11,23 @@
     
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
-      
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="图片地址">
-          <a-input placeholder="请输入图片地址" v-decorator="['fileId', { rules: [{ required: true, message: '请选择图片' }] }]" />
+          label="上传图片">
+        	<a-upload v-decorator="[
+        			'picList',
+        			{
+        				rules: [{ required: true, message: '请上传图片' }],
+        				valuePropName: 'fileList',
+        				getValueFromEvent: normFile,
+        			},
+        		]"
+        	  action="/jeecg-boot/sys/file/upload" list-type="picture"
+            :multiple="true">
+        		<a-button>
+        			<a-icon type="upload" /> 选择文件</a-button>
+        	</a-upload>
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -31,7 +42,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="排序">
-          <a-input placeholder="请输入排序" v-decorator="['order', { rules: [{ required: true, message: '请输入排序' }] }]" />
+          <a-input placeholder="请输入排序" v-decorator="['sort', { rules: [{ required: true, message: '请输入排序' }] }]" />
         </a-form-item>
 		
       </a-form>
@@ -73,6 +84,12 @@
     created () {
     },
     methods: {
+      normFile(e) {
+      	if (Array.isArray(e)) {
+      		return e;
+      	}
+      	return e && e.fileList;
+      },
       add () {
         this.edit({});
       },
@@ -81,10 +98,25 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'fileId','state','order'))
+          this.form.setFieldsValue(pick(this.model,'fileId','state','sort'))
 		  //时间格式化
         });
-
+        //图片处理
+        let picList = []
+        if(this.model.picList){
+          let picObj = this.model.picList
+          for(let i = 0;i < picObj.length;i++){
+            // let file = {}
+            picObj[i].uid = picObj[i].fileId
+            picObj[i].thumbUrl = picObj[i].filePath
+            picObj[i].url = picObj[i].filePath
+            picObj[i].type = picObj[i].fileType
+            picObj[i].name = picObj[i].fileName
+            picObj[i].status = "done"
+            picList.push(picObj[i])
+          }
+        }
+        this.form.setFieldsValue({picList:picList})
       },
       close () {
         this.$emit('close');
@@ -105,9 +137,23 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            let formData = Object.assign(this.model, values);
-            //时间格式化
+            let formData = Object.assign(this.model, values); //时间格式化
             
+            var attach = values.picList;
+            if (attach) {
+            	for (var i = 0; i < attach.length; i++) {
+            		if (attach[i].status != 'done') {
+            			attach.splice(i, 1)
+            		} else {
+            			attach[i].fileName = attach[i].name;
+            			attach[i].filePath = attach[i].filePath?attach[i].filePath:attach[i].response.message;
+            			attach[i].fileType = attach[i].type;
+            		}
+            	}
+            	formData.picList = attach
+            }else{
+              formData.picList = []
+            }
             console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
