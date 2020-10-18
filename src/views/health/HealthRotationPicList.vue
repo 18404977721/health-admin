@@ -55,7 +55,7 @@
         :loading="loading" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" @change="handleTableChange">
 
         <span slot="picList" slot-scope="text, record">
-          <img :src="record.picList[0].filePath" alt="">
+          <img :src="record.picList[0].filePath" alt="" style="width:100px;height:auto;">
         </span>
         <span slot="state" slot-scope="text, record">
           {{record.state==1?'启用':'禁用'}}

@@ -56,9 +56,12 @@
       <a-table ref="table" size="middle" bordered rowKey="id" :columns="columns" :dataSource="dataSource" :pagination="ipagination"
         :loading="loading" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" @change="handleTableChange">
         
-        
         <span slot="isRecommend" slot-scope="text, record">
           {{record.isRecommend=='1'?'是':'否'}}
+        </span>
+        
+        <span slot="isTop" slot-scope="text, record">
+          {{record.isTop=='1'?'是':'否'}}
         </span>
           
         <span slot="action" slot-scope="text, record">
@@ -139,6 +142,14 @@
             dataIndex: 'isRecommend',
             scopedSlots: {
               customRender: 'isRecommend'
+            },
+          },
+          {
+            title: '是否置顶',
+            align: "center",
+            dataIndex: 'isTop',
+            scopedSlots: {
+              customRender: 'isTop'
             },
           },
           {

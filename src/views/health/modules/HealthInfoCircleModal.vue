@@ -58,6 +58,18 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
+          label="是否置顶">
+          <a-select v-decorator="[
+          		'isTop',
+          		{ rules: [{ required: true, message: '请选择是否置顶' }] },
+          	]">
+          	<a-select-option value="1">是</a-select-option>
+            <a-select-option value="0">否</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
           label="内容">
           <j-editor v-decorator="[ 'content', { rules: [{ required: true, message: '请输入内容' }] } ]" triggerChange></j-editor>
         </a-form-item>
@@ -146,7 +158,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'title','source','type','isRecommend','content'))
+          this.form.setFieldsValue(pick(this.model,'title','source','type','isRecommend','isTop','content'))
 		  //时间格式化
           this.form.setFieldsValue({publishTime:this.model.publishTime?moment(this.model.publishTime):null})
           //图片，视频处理
