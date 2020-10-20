@@ -73,10 +73,10 @@
             <a-icon type="lock" @click="batchFrozen('2')"/>
             未审核
           </a-menu-item> -->
-          <a-menu-item key="3">
+          <!-- <a-menu-item key="3">
             <a-icon type="unlock" @click="batchFrozen('1')"/>
             审核通过
-          </a-menu-item>
+          </a-menu-item> -->
         </a-menu>
         <a-button style="margin-left: 8px">
           批量操作
@@ -109,7 +109,7 @@
         </template>
         
         <template slot="status" slot-scope="text, record, index">
-          {{record.status==1?'审核通过':record.status==2?'待审核':''}}
+          {{record.status==3?'待审核':record.status==1&&record.status2!=1?'一级审核通过':record.status2==1?'审核通过':'审核不通过'}}
         </template>
 
         <span slot="action" slot-scope="text, record">
@@ -135,13 +135,18 @@
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
-
-              <a-menu-item v-if="record.status==2">
-                <a-popconfirm title="确定审核通过吗?" @confirm="() => handleFrozen(record.id,1,record.username)">
-                  <a>审核</a>
+              <!-- 一级审核status  1审核通过，2审核不通过，3待审核 -->
+              <a-menu-item v-if="record.status!=1">
+                <a-popconfirm title="确定一级审核通过吗?" @confirm="() => handleFrozen(record.id,1,record.username)">
+                  <a v-has="'btn:first'">一级审核</a>
                 </a-popconfirm>
               </a-menu-item>
-
+              <!-- 二级审核status2  1审核通过，2审核不通过，3待审核 -->
+              <a-menu-item v-if="record.status==1&&record.status2!=1">
+                <a-popconfirm title="确定二级审核通过吗?" @confirm="() => handleFrozen2(record.id,1,record.username)">
+                  <a v-has="'btn:second'">二级审核</a>
+                </a-popconfirm>
+              </a-menu-item>
               <!-- <a-menu-item>
                 <a href="javascript:;" @click="handleAgentSettings(record.username)">代理人</a>
               </a-menu-item> -->
@@ -319,6 +324,22 @@
           return;
         }
         frozenBatch({ids: id, status: status}).then((res) => {
+          if (res.success) {
+            that.$message.success(res.message);
+            that.loadData();
+          } else {
+            that.$message.warning(res.message);
+          }
+        });
+      },
+      handleFrozen2: function (id, status, username) {
+        let that = this;
+        //TODO 后台校验管理员角色
+        if ('admin' == username) {
+          that.$message.warning('管理员账号不允许此操作！');
+          return;
+        }
+        frozenBatch({ids: id, status2: status}).then((res) => {
           if (res.success) {
             that.$message.success(res.message);
             that.loadData();

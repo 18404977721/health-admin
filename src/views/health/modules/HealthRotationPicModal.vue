@@ -99,24 +99,23 @@
         this.visible = true;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'fileId','state','sort'))
-		  //时间格式化
+					//图片处理
+					let picList = []
+					if(this.model.picList){
+					  let picObj = this.model.picList
+					  for(let i = 0;i < picObj.length;i++){
+					    // let file = {}
+					    picObj[i].uid = picObj[i].fileId
+					    picObj[i].thumbUrl = picObj[i].filePath
+					    picObj[i].url = picObj[i].filePath
+					    picObj[i].type = picObj[i].fileType
+					    picObj[i].name = picObj[i].fileName
+					    picObj[i].status = "done"
+					    picList.push(picObj[i])
+					  }
+					}
+					this.form.setFieldsValue({picList:picList})
         });
-        //图片处理
-        let picList = []
-        if(this.model.picList){
-          let picObj = this.model.picList
-          for(let i = 0;i < picObj.length;i++){
-            // let file = {}
-            picObj[i].uid = picObj[i].fileId
-            picObj[i].thumbUrl = picObj[i].filePath
-            picObj[i].url = picObj[i].filePath
-            picObj[i].type = picObj[i].fileType
-            picObj[i].name = picObj[i].fileName
-            picObj[i].status = "done"
-            picList.push(picObj[i])
-          }
-        }
-        this.form.setFieldsValue({picList:picList})
       },
       close () {
         this.$emit('close');
