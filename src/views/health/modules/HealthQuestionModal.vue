@@ -94,7 +94,7 @@
             }
             let formData = Object.assign(this.model, values);
             
-            console.log(formData)
+            //console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

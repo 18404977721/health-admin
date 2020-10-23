@@ -135,7 +135,7 @@
             //时间格式化
             formData.publishTime = formData.publishTime?formData.publishTime.format('YYYY-MM-DD HH:mm:ss'):null;
             
-            console.log(formData)
+            //console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);

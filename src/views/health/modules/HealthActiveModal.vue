@@ -188,7 +188,7 @@
           let videoList = []
           if(this.model.videoList){
             let videoObj = this.model.videoList
-            console.log(videoObj)
+            //console.log(videoObj)
             for(let i = 0;i < videoObj.length;i++){
               // let file = {}
               videoObj[i].uid = videoObj[i].fileId

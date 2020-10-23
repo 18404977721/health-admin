@@ -54,7 +54,7 @@
         </a-form-item>
 
         <!--部门分配-->
-        <a-form-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+        <!-- <a-form-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
           <a-input-search
             placeholder="点击右侧按钮选择部门"
             v-model="checkedDepartNameString"
@@ -62,7 +62,7 @@
             @search="onSearch">
             <a-button slot="enterButton" icon="search">选择</a-button>
           </a-input-search>
-        </a-form-item>
+        </a-form-item> -->
        <!-- update--begin--autor:wangshuai-----date:20200108------for：新增身份和负责部门------ -->
         <a-form-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group
@@ -310,7 +310,7 @@
         }
         // 调用查询用户对应的部门信息的方法
         that.checkedDepartKeys = [];
-        that.loadCheckedDeparts();
+        //that.loadCheckedDeparts();
       },
       //
       loadCheckedDeparts(){
