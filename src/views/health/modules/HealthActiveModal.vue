@@ -22,13 +22,13 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="开始时间">
-          <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'startTime',  { rules: [{ required: true, message: '请选择开始时间' }] }]" />
+          <a-date-picker format='YYYY-MM-DD' v-decorator="[ 'startTime',  { rules: [{ required: true, message: '请选择开始时间' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="结束时间">
-          <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'endTime',  { rules: [{ required: true, message: '请选择结束时间' }] }]" />
+          <a-date-picker format='YYYY-MM-DD' v-decorator="[ 'endTime',  { rules: [{ required: true, message: '请选择结束时间' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -225,8 +225,8 @@
             }
             let formData = Object.assign(this.model, values);
             //时间格式化
-            formData.startTime = formData.startTime?formData.startTime.format('YYYY-MM-DD HH:mm:ss'):null;
-            formData.endTime = formData.endTime?formData.endTime.format('YYYY-MM-DD HH:mm:ss'):null;
+            formData.startTime = formData.startTime?formData.startTime.format('YYYY-MM-DD'):null;
+            formData.endTime = formData.endTime?formData.endTime.format('YYYY-MM-DD'):null;
             
             var attach = values.picList;
             if (attach) {

@@ -28,7 +28,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="发布时间">
-          <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-decorator="[ 'publishTime', { rules: [{ required: true, message: '请选择发布时间' }] }]" />
+          <a-date-picker format='YYYY-MM-DD' v-decorator="[ 'publishTime', { rules: [{ required: true, message: '请选择发布时间' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -200,7 +200,7 @@
             }
             let formData = Object.assign(this.model, values);
             //时间格式化
-            formData.publishTime = formData.publishTime?formData.publishTime.format('YYYY-MM-DD HH:mm:ss'):null;
+            formData.publishTime = formData.publishTime?formData.publishTime.format('YYYY-MM-DD'):null;
             var attach = values.picList;
             if (attach) {
             	for (var i = 0; i < attach.length; i++) {

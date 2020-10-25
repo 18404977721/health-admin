@@ -13,7 +13,7 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="发布时间">
-              <a-date-picker format='YYYY-MM-DD HH:mm:ss' v-model="queryParam.publishTime" />
+              <a-date-picker format='YYYY-MM-DD' v-model="queryParam.publishTime" />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
