@@ -172,7 +172,7 @@
             var attach = values.picList;
             if (attach) {
             	for (var i = 0; i < attach.length; i++) {
-            		if (attach[i].status != 'done') {
+            		if (attach[i].status != 'done'||attach[i].oneFrame == '1') {
             			attach.splice(i, 1)
             		} else {
             			attach[i].fileName = attach[i].name;
