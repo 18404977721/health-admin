@@ -66,17 +66,15 @@
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay" @click="handleMenuClick">
           <a-menu-item key="1">
-            <a-icon type="delete" @click="batchDel"/>
+            <a-icon type="delete"/>
             删除
           </a-menu-item>
-          <!-- <a-menu-item key="2">
-            <a-icon type="lock" @click="batchFrozen('2')"/>
-            未审核
-          </a-menu-item> -->
-          <!-- <a-menu-item key="3">
-            <a-icon type="unlock" @click="batchFrozen('1')"/>
-            审核通过
-          </a-menu-item> -->
+          <a-menu-item key="2">
+            设置为普通会员
+          </a-menu-item>
+          <a-menu-item key="3">
+            设置为副会长单位
+          </a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px">
           批量操作
@@ -175,7 +173,7 @@
 <script>
   import UserModal from './modules/UserModal'
   import PasswordModal from './modules/PasswordModal'
-  import {putAction,getFileAccessHttpUrl} from '@/api/manage';
+  import {putAction,getFileAccessHttpUrl,getAction} from '@/api/manage';
   import {frozenBatch} from '@/api/api'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import SysUserAgentModal from "./modules/SysUserAgentModal";
@@ -266,6 +264,42 @@
       }
     },
     methods: {
+      checkRole(type){
+        console.log(1111111111)
+        let typeName = type=='1'?'普通会员':'副会长单位'
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning('请选择一条记录！');
+          return;
+        } else {
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          var that = this;
+          this.$confirm({
+            title: "确认设置为"+typeName+'吗？',
+            content: "",
+            onOk() {
+              that.loading = true;
+              getAction('/sys/user/updateBatch', {ids: ids,userType:type}).then((res) => {
+                if (res.success) {
+                  that.$message.success(res.message);
+                  that.loadData();
+                  that.onClearSelected();
+                } else {
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.loading = false;
+              });
+            },
+            onCancel() {},
+            // onOk: function () {
+              
+            // }
+          });
+        }
+      },
       getAvatarView: function (avatar) {
         return getFileAccessHttpUrl(avatar,this.url.imgerver,"http")
       },
@@ -311,9 +345,9 @@
         if (e.key == 1) {
           this.batchDel();
         } else if (e.key == 2) {
-          this.batchFrozen(2);
+          this.checkRole('1')
         } else if (e.key == 3) {
-          this.batchFrozen(1);
+          this.checkRole('2')
         }
       },
       handleFrozen: function (id, status, username) {

@@ -66,43 +66,12 @@
        <!-- update--begin--autor:wangshuai-----date:20200108------for：新增身份和负责部门------ -->
         <a-form-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group
-            v-model="identity"
-            @change="identityChange">
-            <a-radio value="1">普通用户</a-radio>
-            <a-radio value="2">上级</a-radio>
+            v-model="userType"
+          >
+            <a-radio value="1">普通会员</a-radio>
+            <a-radio value="2">副会长单位</a-radio>
           </a-radio-group>
         </a-form-item>
-        <!-- <a-form-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
-          <a-select
-            mode="multiple"
-            style="width: 100%"
-            placeholder="请选择负责部门"
-            v-model="departIds"
-            optionFilterProp = "children"
-            :getPopupContainer = "(target) => target.parentNode"
-            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-          >
-            <a-select-option v-for="item in resultDepartOptions" :key="item.key" :value="item.key"
-            >{{item.title}}</a-select-option
-            >
-          </a-select>
-        </a-form-item> -->
-        <!-- update--end--autor:wangshuai-----date:20200108------for：新增身份和负责部门------ -->
-        <!-- <a-form-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-image-upload class="avatar-uploader" text="上传" v-model="fileList" ></j-image-upload>
-        </a-form-item> -->
-
-        <!-- <a-form-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select v-decorator="[ 'sex', {}]" placeholder="请选择性别">
-            <a-select-option :value="1">男</a-select-option>
-            <a-select-option :value="2">女</a-select-option>
-          </a-select>
-        </a-form-item> -->
-
-        <!-- <a-form-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入邮箱" v-decorator="[ 'email', validatorRules.email]" />
-        </a-form-item> -->
-
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')" v-decorator="[ 'phone', validatorRules.phone]" />
         </a-form-item>
@@ -195,7 +164,6 @@
           },
           roles:{},
         },
-        departIdShow:false,
         departIds:[], //负责部门id
         title:"操作",
         visible: false,
@@ -222,7 +190,7 @@
           userId:"/sys/user/generateUserId", // 引入生成添加用户情况下的url
           syncUserByUserName:"/process/extActProcess/doSyncUserByUserName",//同步用户到工作流
         },
-        identity:"1",
+        userType:"1",
         fileList:[],
       }
     },
@@ -275,7 +243,6 @@
           this.userId=""
           this.resultDepartOptions=[];
           this.departId=[];
-          this.departIdShow=false;
       },
       add () {
         this.picUrl = "";
@@ -298,15 +265,13 @@
         that.visible = true;
         that.model = Object.assign({}, record);
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync'))
+          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync','userType'))
         });
         //身份为上级显示负责部门，否则不显示
-        if(this.model.identity=="2"){
-            this.identity="2";
-            this.departIdShow=true;
+        if(this.model.userType=="2"){
+            this.userType="2";
         }else{
-            this.identity="1";
-            this.departIdShow=false;
+            this.userType="1";
         }
         // 调用查询用户对应的部门信息的方法
         that.checkedDepartKeys = [];
@@ -357,8 +322,7 @@
         this.selectedDepartKeys = [];
         this.resultDepartOptions=[];
         this.departIds=[];
-        this.departIdShow=false;
-        this.identity="1";
+        this.userType="1";
         this.fileList=[];
       },
       moment,
@@ -373,14 +337,7 @@
             formData.avatar = that.fileList;
             formData.selectedroles = this.selectedRole.length>0?this.selectedRole.join(","):'';
             formData.selecteddeparts = this.userDepartModel.departIdList.length>0?this.userDepartModel.departIdList.join(","):'';
-            formData.identity=this.identity;
-            //如果是上级择传入departIds,否则为空
-            if(this.identity==="2"){
-              formData.departIds=this.departIds.join(",");
-            }else{
-              formData.departIds="";
-            }
-            // that.addDepartsToUser(that,formData); // 调用根据当前用户添加部门信息的方法
+            formData.userType=this.userType;
             let obj;
             if(!this.model.id){
               formData.id = this.userId;
@@ -570,13 +527,6 @@
           this.drawerWidth = 700;
         }
       },
-      identityChange(e){
-        if(e.target.value==="1"){
-            this.departIdShow=false;
-        }else{
-            this.departIdShow=true;
-        }
-      }
     }
   }
 </script>
