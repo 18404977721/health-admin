@@ -34,6 +34,9 @@
   import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import moment from "moment"
+  import locale from 'ant-design-vue/lib/locale-provider/zh_CN';
+  import 'moment/locale/zh-cn';
+  moment.locale('zh-cn');
 
   export default {
     name: "HealthQuestionAnswerModal",
