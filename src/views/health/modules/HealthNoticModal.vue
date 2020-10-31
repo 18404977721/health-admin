@@ -16,7 +16,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="标题">
-          <a-input placeholder="请输入标题" v-decorator="['title', { rules: [{ required: true, message: '请输入标题' }] }]" />
+          <a-input :maxLength="100" placeholder="请输入标题" v-decorator="['title', { rules: [{ required: true, message: '请输入标题' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"

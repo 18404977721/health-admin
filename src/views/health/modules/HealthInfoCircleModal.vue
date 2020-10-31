@@ -16,7 +16,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="标题">
-          <a-input placeholder="请输入标题" v-decorator="['title', { rules: [{ required: true, message: '请输入标题' }] }]" />
+          <a-input :maxLength="100" placeholder="请输入标题" v-decorator="['title', { rules: [{ required: true, message: '请输入标题' }] }]" />
         </a-form-item>
         <a-form-item
           :labelCol="labelCol"
@@ -89,6 +89,7 @@
         		<a-button>
         			<a-icon type="upload" /> 选择文件</a-button>
         	</a-upload>
+          <div>“支持*.jpg;*.png格式图片；图片不大于10MB”</div>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -137,10 +138,18 @@
     },
     methods: {
       normFile(e) {
-      	if (Array.isArray(e)) {
-      		return e;
-      	}
-      	return e && e.fileList;
+        const isJPG = e.file.type === 'image/jpeg';
+        const isPNG = e.file.type === 'image/png';
+        const isPic = isJPG || isPNG || isBMP || isGIF || isWEBP;
+        if (!isPic) {
+          this.$message.warning('只能上传图片');
+          return e.fileList.filter((fileItem)=> e.file.uid !== fileItem.uid);
+        } else {
+          if (Array.isArray(e)) {
+            return e;
+          }
+          return e && e.fileList;
+        }
       },
       getList(){
         let formData = {}

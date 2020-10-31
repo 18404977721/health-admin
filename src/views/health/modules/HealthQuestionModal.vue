@@ -16,7 +16,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           label="问题">
-          <a-input placeholder="请输入问题" v-decorator="['question', validatorRules.question ]" />
+          <a-input :maxLength="100" placeholder="请输入问题" v-decorator="['question', validatorRules.question ]" />
         </a-form-item>
        
       </a-form>

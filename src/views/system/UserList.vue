@@ -102,8 +102,8 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
         
-        <template slot="userType" slot-scope="text, record, index">
-          {{record.userType==0?'个人':record.userType==1?'企业':''}}
+        <template slot="post" slot-scope="text, record, index">
+          {{record.post==0?'个人':record.post==1?'企业':''}}
         </template>
         
         <template slot="status" slot-scope="text, record, index">
@@ -222,8 +222,8 @@
             title: '类型',
             align: "center",
             width: 100,
-            scopedSlots: {customRender: 'userType'},
-            dataIndex: 'userType'
+            scopedSlots: {customRender: 'post'},
+            dataIndex: 'post'
           },
           {
             title: '手机号码',
