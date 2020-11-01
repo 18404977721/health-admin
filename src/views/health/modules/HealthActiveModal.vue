@@ -62,6 +62,7 @@
         				getValueFromEvent: normFile,
         			},
         		]"
+            accept="image/jpeg,image/gif,image/png"
         	  action="/jeecg-boot/sys/file/upload" list-type="picture">
         		<a-button>
         			<a-icon type="upload" /> 选择文件</a-button>

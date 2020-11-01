@@ -49,6 +49,7 @@
         				getValueFromEvent: normFile,
         			},
         		]"
+            accept="image/jpeg,image/gif,image/png"
         	  action="/jeecg-boot/sys/file/upload" list-type="picture"
             :multiple="true">
         		<a-button>
