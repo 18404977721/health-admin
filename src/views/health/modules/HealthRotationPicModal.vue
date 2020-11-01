@@ -91,7 +91,7 @@
       normFile(e) {
         const isJPG = e.file.type === 'image/jpeg';
         const isPNG = e.file.type === 'image/png';
-        const isPic = isJPG || isPNG || isBMP || isGIF || isWEBP;
+        const isPic = isJPG || isPNG;
         if (!isPic) {
           this.$message.warning('只能上传图片');
           return e.fileList.filter((fileItem)=> e.file.uid !== fileItem.uid);
