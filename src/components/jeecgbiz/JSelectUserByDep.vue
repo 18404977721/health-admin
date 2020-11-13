@@ -72,7 +72,7 @@
         } else {
           let temp = ''
           for (let item of rows) {
-            temp += ',' + item.realname
+            temp += ',' + item.workNo
           }
           this.userNames = temp.substring(1)
           this.userIds = idstr

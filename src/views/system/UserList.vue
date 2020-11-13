@@ -26,7 +26,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :md="6" :sm="8">
               <a-form-item label="真实名字">
-                <a-input placeholder="请输入真实名字" v-model="queryParam.realname"></a-input>
+                <a-input placeholder="请输入真实名字" v-model="queryParam.workNo"></a-input>
               </a-form-item>
             </a-col>
 
@@ -216,7 +216,7 @@
             title: '用户姓名',
             align: "center",
             width: 100,
-            dataIndex: 'realname',
+            dataIndex: 'workNo',
           },   
           {
             title: '类型',

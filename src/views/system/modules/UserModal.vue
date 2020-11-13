@@ -37,7 +37,11 @@
         </template>
 
         <a-form-item label="用户姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" >
-          <a-input placeholder="请输入用户姓名" v-decorator="[ 'realname', validatorRules.realname]" />
+          <a-input placeholder="请输入用户姓名" v-decorator="[ 'workNo', validatorRules.workNo]" />
+        </a-form-item>
+        
+        <a-form-item label="个人住址" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入个人住址" v-decorator="[ 'userRegion', validatorRules.userRegion]" />
         </a-form-item>
 
         <a-form-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
@@ -155,7 +159,7 @@
               validator: this.compareToFirstPassword,
             }],
           },
-          realname:{rules: [{ required: true, message: '请输入用户名称!' }]},
+          workNo:{rules: [{ required: true, message: '请输入用户名称!' }]},
           phone:{rules: [{required: true,validator: this.validatePhone}]},
           email:{
             rules: [{
@@ -265,7 +269,7 @@
         that.visible = true;
         that.model = Object.assign({}, record);
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model,'username','sex','realname','email','phone','activitiSync','userType'))
+          that.form.setFieldsValue(pick(this.model,'username','sex','workNo','email','phone','activitiSync','userType'))
         });
         //身份为上级显示负责部门，否则不显示
         if(this.model.userType=="2"){

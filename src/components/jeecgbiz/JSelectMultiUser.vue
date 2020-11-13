@@ -20,7 +20,7 @@
       return {
         url: { list: '/sys/user/list' },
         columns: [
-          { title: '姓名', align: 'center', width: '20%', widthRight: '70%', dataIndex: 'realname' },
+          { title: '姓名', align: 'center', width: '20%', widthRight: '70%', dataIndex: 'workNo' },
           { title: '账号', align: 'center', width: '20%', dataIndex: 'username' },
           { title: '电话', align: 'center', width: '23%', dataIndex: 'phone' },
           { title: '出生日期', align: 'center', width: '23%', dataIndex: 'birthday' }
@@ -29,7 +29,7 @@
         default: {
           name: '用户',
           width: 1000,
-          displayKey: 'realname',
+          displayKey: 'workNo',
           returnKeys: ['id', 'username'],
           queryParamText: '账号',
         }

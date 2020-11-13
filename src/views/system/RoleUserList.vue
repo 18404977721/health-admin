@@ -284,7 +284,7 @@
             title: '用户名称',
             align: 'center',
             width: 100,
-            dataIndex: 'realname'
+            dataIndex: 'workNo'
           },
           {
             title: '状态',

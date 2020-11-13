@@ -76,7 +76,7 @@
           {
             title: '用户姓名',
             align: 'center',
-            dataIndex: 'realname'
+            dataIndex: 'workNo'
           },
           {
             title: '性别',
@@ -165,7 +165,7 @@
               let selectedRowKeys = []
               let realNames = []
               res.result.records.forEach(user => {
-                realNames.push(user['realname'])
+                realNames.push(user['workNo'])
                 selectedRowKeys.push(user['id'])
               })
               this.selectedRowKeys = selectedRowKeys

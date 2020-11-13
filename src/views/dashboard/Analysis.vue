@@ -17,7 +17,9 @@
       }
     },
     created() {
-
+      this.$store.dispatch('ToggleTheme', "light")
+      this.$store.dispatch('ToggleLayoutMode', "sidemenu")
+      this.$store.dispatch('ToggleFixSiderbar', false)
     },
     methods: {
 

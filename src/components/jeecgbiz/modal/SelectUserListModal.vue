@@ -48,7 +48,7 @@
           {
             title: '用户姓名',
             align: "center",
-            dataIndex: 'realname',
+            dataIndex: 'workNo',
           },
           {
             title: '性别',

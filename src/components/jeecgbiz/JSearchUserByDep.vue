@@ -74,7 +74,7 @@
           {
             title: '真实姓名',
             align: 'center',
-            dataIndex: 'realname'
+            dataIndex: 'workNo'
           },
           {
             title: '角色名称',
@@ -228,7 +228,7 @@
         let dataSource = this.dataSource;
         for (let i = 0, len = dataSource.length; i < len; i++) {
           if (rowId === dataSource[i].id) {
-            this.userNameArr.push(dataSource[i].realname);
+            this.userNameArr.push(dataSource[i].workNo);
           }
         }
       },

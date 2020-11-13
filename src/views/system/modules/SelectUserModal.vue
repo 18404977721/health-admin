@@ -90,7 +90,7 @@
             title: '用户名称',
             align: "center",
             width: 100,
-            dataIndex: 'realname'
+            dataIndex: 'workNo'
           },
           {
             title: '性别',
@@ -121,7 +121,7 @@
           {
             title: '用户名称',
             align: "center",
-            dataIndex: 'realname',
+            dataIndex: 'workNo',
           },
           {
             title: '操作',

@@ -9,7 +9,7 @@ const user = {
   state: {
     token: '',
     username: '',
-    realname: '',
+    workNo: '',
     welcome: '',
     avatar: '',
     permissionList: [],
@@ -20,9 +20,9 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, { username, realname, welcome }) => {
+    SET_NAME: (state, { username, workNo, welcome }) => {
       state.username = username
-      state.realname = realname
+      state.workNo = workNo
       state.welcome = welcome
     },
     SET_AVATAR: (state, avatar) => {
@@ -50,7 +50,7 @@ const user = {
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
-            commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+            commit('SET_NAME', { username: userInfo.username,workNo: userInfo.workNo, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             resolve(response)
           }else{
@@ -73,7 +73,7 @@ const user = {
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
-            commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+            commit('SET_NAME', { username: userInfo.username,workNo: userInfo.workNo, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             resolve(response)
           }else{
@@ -96,7 +96,7 @@ const user = {
         Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
         commit('SET_TOKEN', result.token)
         commit('SET_INFO', userInfo)
-        commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+        commit('SET_NAME', { username: userInfo.username,workNo: userInfo.workNo, welcome: welcome() })
         commit('SET_AVATAR', userInfo.avatar)
         resolve(response)
       }else{

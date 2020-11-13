@@ -65,7 +65,7 @@
         let names = ''
         let keys = ''
         for (let row of selectionRows) {
-          names = row.realname + "," + names
+          names = row.workNo + "," + names
           keys = row.username + "," + keys
         }
         this.userNames = names
