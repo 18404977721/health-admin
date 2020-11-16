@@ -102,8 +102,8 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
         
-        <template slot="post" slot-scope="text, record, index">
-          {{record.post==0?'个人':record.post==1?'企业':''}}
+        <template slot="userType" slot-scope="text, record, index">
+          {{record.userType==0?'个人':record.userType==1?'企业':''}}
         </template>
         
         <template slot="status" slot-scope="text, record, index">
@@ -222,8 +222,8 @@
             title: '类型',
             align: "center",
             width: 100,
-            scopedSlots: {customRender: 'post'},
-            dataIndex: 'post'
+            scopedSlots: {customRender: 'userType'},
+            dataIndex: 'userType'
           },
           {
             title: '手机号码',
@@ -265,7 +265,6 @@
     },
     methods: {
       checkRole(type){
-        console.log(1111111111)
         let typeName = type=='1'?'普通会员':'副会长单位'
         if (this.selectedRowKeys.length <= 0) {
           this.$message.warning('请选择一条记录！');

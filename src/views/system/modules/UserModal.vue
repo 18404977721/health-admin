@@ -79,6 +79,48 @@
         <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')" v-decorator="[ 'phone', validatorRules.phone]" />
         </a-form-item>
+        <!-- <a-form-item v-if="model.userType==1" label="行业分类" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-select
+            mode="multiple"
+            style="width: 100%"
+            placeholder="行业分类"
+            optionFilterProp = "children"
+            v-model="model.sysUserBusiness.industryClass">
+            <a-select-option v-for="(role,roleindex) in industryTypeOption" :key="roleindex.toString()" :value="id" :label="name">
+             
+            </a-select-option>
+          </a-select>
+        </a-form-item> -->
+        <a-form-item v-if="model.userType==1" label="公司名称" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入公司名称" v-decorator="[ 'sysUserBusiness.businessName']" />
+        </a-form-item>        
+        <a-form-item v-if="model.userType==1" label="公司地址" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入公司地址" v-decorator="[ 'sysUserBusiness.businessAddr']" />
+        </a-form-item>
+        <a-form-item v-if="model.userType==1" label="公司电话" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入公司电话" v-decorator="[ 'sysUserBusiness.businessPhone']" />
+        </a-form-item>     
+      <!-- <a-form-item lv-if="model.userType==1" label="公司性质" :labelCol="labelCol" :wrapperCol="wrapperCol">
+         <a-cascader :options="queryList" placeholder="请选择" v-decorator="['businessNature']" />
+       </a-form-item> -->
+        <a-form-item v-if="model.userType==1" label="电子邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入电子邮箱" v-decorator="[ 'sysUserBusiness.businessEmail']" />
+        </a-form-item>        
+        <a-form-item v-if="model.userType==1" label="员工总数" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入员工总数" v-decorator="[ 'sysUserBusiness.businessNum']" />
+        </a-form-item>        
+        <a-form-item v-if="model.userType==1" label="注册资金" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入注册资金" v-decorator="[ 'sysUserBusiness.businessAccount']" addonAfter="万" />
+        </a-form-item>
+        <a-form-item v-if="model.userType==1" label="法定代表人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入法定代表人姓名" v-decorator="[ 'sysUserBusiness.businessLegalName']"  />
+        </a-form-item>
+        <a-form-item v-if="model.userType==1" label="身份证号" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+          <a-input placeholder="请输入身份证号" v-decorator="[ 'sysUserBusiness.businessLegalCard']"  />
+        </a-form-item>
+        
+        
+        
 
         <!-- <a-form-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-dict-select-tag  v-decorator="['activitiSync', {}]" placeholder="请选择是否同步工作流引擎" :type="'radio'" :triggerChange="true" dictCode="activiti_sync"/>
@@ -120,6 +162,8 @@
     },
     data () {
       return {
+        industryTypeOption:[], 
+        queryList:[], 
         departDisabled: false, //是否是我的部门调用该页面
         roleDisabled: false, //是否是角色维护调用该页面
         modalWidth:800,
@@ -161,6 +205,7 @@
           },
           workNo:{rules: [{ required: true, message: '请输入用户名称!' }]},
           phone:{rules: [{required: true,validator: this.validatePhone}]},
+          userRegion:{rules: [{required: true,message: '请输入个人住址!'}]},
           email:{
             rules: [{
               validator: this.validateEmail
@@ -201,7 +246,8 @@
     created () {
       const token = Vue.ls.get(ACCESS_TOKEN);
       this.headers = {"X-Access-Token":token}
-
+      this.getQueryList()
+			this.getlistTree()
     },
     computed:{
       uploadAction:function () {
@@ -209,6 +255,20 @@
       }
     },
     methods: {
+      //行业类别
+      getlistTree() {
+      	var url = '/sysIndustryType/listTree';
+      	getAction(url).then((res) => {
+      		this.industryTypeOption = res.result;
+      	})
+      },
+      //公司性质
+      getQueryList() {
+      	var url = '/sys/user/queryList';
+      	getAction(url).then((res) => {
+      		this.queryList = res.result;
+      	})
+      },
       isDisabledAuth(code){
         return disabledAuthFilter(code);
       },
@@ -269,7 +329,7 @@
         that.visible = true;
         that.model = Object.assign({}, record);
         that.$nextTick(() => {
-          that.form.setFieldsValue(pick(this.model,'username','sex','workNo','email','phone','activitiSync','userType'))
+          that.form.setFieldsValue(pick(this.model,'username','sex','workNo','userRegion','email','phone','activitiSync','userType','sysUserBusiness'))
         });
         //身份为上级显示负责部门，否则不显示
         if(this.model.userType=="2"){
