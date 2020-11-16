@@ -181,45 +181,51 @@
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
-        this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'title','activeType','activeAddr','activeContent'))
-          //时间格式化
-          this.form.setFieldsValue({startTime:this.model.startTime?moment(this.model.startTime):null})
-          this.form.setFieldsValue({endTime:this.model.endTime?moment(this.model.endTime):null})
-          //图片，视频处理
-          let picList = []
-          if(this.model.picList){
-            let picObj = this.model.picList
-            for(let i = 0;i < picObj.length;i++){
-              // let file = {}
-              picObj[i].uid = picObj[i].fileId
-              picObj[i].thumbUrl = picObj[i].filePath
-              picObj[i].url = picObj[i].filePath
-              picObj[i].type = picObj[i].fileType
-              picObj[i].name = picObj[i].fileName
-              picObj[i].status = "done"
-              picList.push(picObj[i])
+        if(record.id){
+          let formData = {}
+          formData.id = record.id
+          getAction('/health/healthActive/queryById',formData).then((res)=>{
+            if(res.success){
+              this.$nextTick(() => {
+                this.form.setFieldsValue({title:res.result.title})
+                this.form.setFieldsValue({activeType:res.result.activeType})
+                this.form.setFieldsValue({activeAddr:res.result.activeAddr})
+                this.form.setFieldsValue({activeContent:res.result.activeContent})
+                this.form.setFieldsValue({startTime:res.result.startTime?moment(res.result.startTime):null})
+                this.form.setFieldsValue({endTime:res.result.endTime?moment(res.result.endTime):null})
+                //图片，视频处理
+                let picList = []
+                if(res.result.picList){
+                  let picObj = res.result.picList
+                  for(let i = 0;i < picObj.length;i++){
+                    picObj[i].uid = picObj[i].fileId
+                    picObj[i].thumbUrl = picObj[i].filePath
+                    picObj[i].url = picObj[i].filePath
+                    picObj[i].type = picObj[i].fileType
+                    picObj[i].name = picObj[i].fileName
+                    picObj[i].status = "done"
+                    picList.push(picObj[i])
+                  }
+                }
+                this.form.setFieldsValue({picList:picList})
+                let videoList = []
+                if(res.result.videoList){
+                  let videoObj = res.result.videoList
+                  for(let i = 0;i < videoObj.length;i++){
+                    videoObj[i].uid = videoObj[i].fileId
+                    videoObj[i].thumbUrl = videoObj[i].filePath
+                    videoObj[i].url = videoObj[i].filePath
+                    videoObj[i].type = videoObj[i].fileType
+                    videoObj[i].name = videoObj[i].fileName
+                    videoObj[i].status = "done"
+                    videoList.push(videoObj[i])
+                  }
+                }
+                this.form.setFieldsValue({videoList:videoList})
+              });
             }
-          }
-          this.form.setFieldsValue({picList:picList})
-          let videoList = []
-          if(this.model.videoList){
-            let videoObj = this.model.videoList
-            //console.log(videoObj)
-            for(let i = 0;i < videoObj.length;i++){
-              // let file = {}
-              videoObj[i].uid = videoObj[i].fileId
-              videoObj[i].thumbUrl = videoObj[i].filePath
-              videoObj[i].url = videoObj[i].filePath
-              videoObj[i].type = videoObj[i].fileType
-              videoObj[i].name = videoObj[i].fileName
-              videoObj[i].status = "done"
-              videoList.push(videoObj[i])
-            }
-          }
-          this.form.setFieldsValue({videoList:videoList})
-        });
-
+          })
+        }
       },
       close () {
         this.$emit('close');
